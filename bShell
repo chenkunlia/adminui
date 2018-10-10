@@ -1,0 +1,10 @@
+npm run build;
+rm -rf /d/Program Files/tomcat/apache-tomcat-9.0.12/webapps/ui-web/*;
+rm -rf /e/chromeDownload/ui-web/*;
+echo 'remove success'
+cp -r /d/workspace/djsl/ui-web/dist/*  /d/Program\ Files/tomcat/apache-tomcat-9.0.12/webapps/ui-web/
+cp -r /d/workspace/djsl/ui-web/dist/*  /e/chromeDownload/ui-web/
+cp -r /d/workspace/djsl/WEB-INF /e/chromeDownload/ui-web/
+cp -r /d/workspace/djsl/WEB-INF /d/Program\ Files/tomcat/apache-tomcat-9.0.12/webapps/ui-web/
+echo 'copy success'
+npm run dev
