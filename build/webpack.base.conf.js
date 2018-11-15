@@ -23,7 +23,7 @@ const createLintingRule = () => ({
 const webpackConfig = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: ['babel-polyfill','./src/admin/admin.js']
+    app: ["babel-polyfill",'./src/admin/admin.js']
   },
   output: {
     path: config.build.assetsRoot,

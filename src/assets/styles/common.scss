@@ -1,0 +1,13 @@
+/*修复Element Tabs 标签页遮挡问题 表格复选框遮挡问题*/
+
+.el-tabs__nav {
+  z-index: 0 !important;
+}
+
+.el-tabs__nav-wrap::after {
+  z-index: 0 !important;
+}
+
+.el-checkbox__inner {
+  z-index: 0 !important;
+}

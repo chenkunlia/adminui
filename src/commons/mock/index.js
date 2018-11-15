@@ -4,6 +4,8 @@ import articleAPI from './article'
 import remoteSearchAPI from './remoteSearch'
 import transactionAPI from './transaction'
 
+import schedulingAPI from './scheduling'
+
 // Mock.setup({
 //   timeout: '350-600'
 // })
@@ -25,5 +27,9 @@ Mock.mock(/\/search\/user/, 'get', remoteSearchAPI.searchUser)
 
 // 账单相关
 Mock.mock(/\/transaction\/list/, 'get', transactionAPI.getList)
+
+// 调度计划相关
+// Mock.mock(/\/app\/scheduling\/page/, 'post', schedulingAPI.getList)
+// Mock.mock(/\/app\/scheduling\/options/, 'get', schedulingAPI.getOptions)
 
 export default Mock

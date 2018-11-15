@@ -20,18 +20,19 @@ router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   if (getToken()) { // determine if there has token
     /* has token */
-    console.log('带token进入')
+    // console.log('带token进入')
     if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
       if (!store.getters.menus || store.getters.menus.length === 0) {
-        console.log('menus')
+        // console.log('menus')
+        // console.log(to.path)
         store.dispatch('GetUserMenu').then(res => { // 拉取user_info
           const menus = res.data // note: roles must be a array! such as: ['editor','develop']
           // console.log(menus)
           store.dispatch('GenPrivRoutes', menus).then(() => {
-            console.log('生成菜单成功！！')
+            // console.log('生成菜单成功！！')
           })
         }).catch((err) => {
           store.dispatch('FedLogOut').then(() => {
@@ -67,7 +68,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     /* has no token */
-    console.log('直接进入')
+    // console.log('直接进入')
     if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
       next()
     } else {

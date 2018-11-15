@@ -125,19 +125,19 @@ export default {
 .tags-view-container {
   .tags-view-wrapper {
     background: #fff;
-    height: 34px;
+    height: 47px;
     border-bottom: 1px solid #d8dce5;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
     .tags-view-item {
       display: inline-block;
       position: relative;
-      height: 26px;
-      line-height: 26px;
+      height: 35px;
+      line-height: 35px;
       border: 1px solid #d8dce5;
       color: #495060;
       background: #fff;
       padding: 0 8px;
-      font-size: 12px;
+      font-size: 15px;
       margin-left: 5px;
       margin-top: 4px;
       &:first-of-type {
@@ -163,7 +163,7 @@ export default {
   .contextmenu {
     margin: 0;
     background: #fff;
-    z-index: 100;
+    z-index: 990;
     position: absolute;
     list-style-type: none;
     padding: 5px 0;

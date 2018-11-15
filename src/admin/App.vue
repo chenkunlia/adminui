@@ -1,10 +1,11 @@
 <template>
   <div id="app">    
-    <router-view/>
+    <router-view v-if="isRouterAlive"/>
   </div>
 </template>
 
 <script>
+import store from '@/commons/store'
 export default {
   name: 'App',
   provide(){
@@ -20,6 +21,16 @@ export default {
   methods:{
     reload(){
       this.isRouterAlive=false
+      store.dispatch('GetUserMenu').then(res => { // 拉取user_info
+          const menus = res.data // note: roles must be a array! such as: ['editor','develop']
+          store.dispatch('GenPrivRoutes', menus).then(() => {
+          })
+        }).catch((err) => {
+          store.dispatch('FedLogOut').then(() => {
+            Message.error(err || 'Verification failed, please login again')
+          })
+        })
+        
       this.$nextTick(function(){
         this.isRouterAlive=true
       })

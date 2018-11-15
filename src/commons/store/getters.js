@@ -15,6 +15,7 @@ const getters = {
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters,
   privRouters: state => state.permission.privRouters,
-  errorLogs: state => state.errorLog.logs
+  errorLogs: state => state.errorLog.logs,
+  bubbleNum: state => state.user.bubbleNum
 }
 export default getters

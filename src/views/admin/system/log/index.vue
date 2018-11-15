@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-form :inline="true">
         <el-form-item label="操作">
-          <el-select v-model="listQuery.operationType" clearable style="width: 200px" class="filter-item">
+          <el-select v-model="listQuery.operationType" clearable style="width: 200px" class="filter-item" placeholder="全部">
             <el-option v-for="(val, key) in operationTypeOptions" :key="val" :label="key" :value="val" />
           </el-select>
         </el-form-item>
@@ -13,13 +13,13 @@
         </el-form-item>
 
         <el-form-item label="模块">
-          <el-select v-model="listQuery.operationModule" clearable class="filter-item" style="width: 200px">
+          <el-select v-model="listQuery.operationModule" clearable class="filter-item" style="width: 200px" placeholder="全部">
             <el-option v-for="(val, key) in moduleTypeOptions" :key="key" :label="val" :value="key" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="操作时间">
-          <el-date-picker v-model="listQuery.operationTime" clearable type="date" placeholder="选择日期">
+          <el-date-picker v-model="listQuery.timeTemp" clearable type="date" placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
 
@@ -129,9 +129,9 @@ export default {
       this.listLoading = true;
       //调用fetchList获取数据
 
-      if (this.listQuery.operationTime) {
+      if (this.listQuery.timeTemp) {
         this.listQuery.operationTime = parseTime(
-          this.listQuery.operationTime,
+          this.listQuery.timeTemp,
           "{y}-{m}-{d}"
         );
       }
@@ -142,9 +142,7 @@ export default {
 
           this.list = response.data.list;
           this.total = response.data.total;
-          setTimeout(() => {
-            this.listLoading = false;
-          }, 1.5 * 1000);
+          this.listLoading = false;
         } catch (e) {
           console.log(e);
         }
@@ -155,9 +153,6 @@ export default {
     getTypeList() {
       getTypeListSelect().then(response => {
         this.operationTypeOptions = response.data;
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
       });
     },
 
@@ -165,9 +160,6 @@ export default {
     getModuleList() {
       getModuleListSelect(this.listQuery).then(response => {
         this.moduleTypeOptions = response.data;
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
       });
     },
 
@@ -186,7 +178,7 @@ export default {
       this.listQuery.operationUser = "";
       this.listQuery.operationType = undefined;
       this.listQuery.operationTime = "";
-      this.getList();
+      this.listQuery.timeTemp = "";
     },
 
     //显示每页条数

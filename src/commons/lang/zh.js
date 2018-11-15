@@ -64,10 +64,12 @@ export default {
     systemMenu: '菜单管理',
     systemRole: '角色管理',
     system: '系统管理',
-    dashboard: '首页',
     user: '用户管理',
-    organ: '组织管理',
+    organ: '部门管理',
     log: '日志管理'
+  },
+  dutyIndex: {
+    dutyArrange: '值班管理'
   },
   navbar: {
     logOut: '退出登录',

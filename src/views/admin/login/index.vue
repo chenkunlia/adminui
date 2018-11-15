@@ -4,41 +4,36 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" :style="{backgroundImage:  lgFromImg }" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <div :style="{backgroundImage:  szdjImg,width:'138px',height:'35px' }" ></div>
+        <div :style="{backgroundImage:  szdjImg,width:'138px',height:'35px' }"></div>
         <div :style="{backgroundImage:  ptImg,width:'421px',height:'38px',marginTop:'1rem' }"></div>
-        <lang-select class="set-language" />
+        <!-- <lang-select class="set-language" /> -->
       </div>
 
       <el-form-item prop="account">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="loginForm.account" :placeholder="$t('login.username')" name="account" type="text" auto-complete="on" />
+        <el-input v-model="loginForm.account" :placeholder="$t('login.username')" name="account" type="text" auto-complete="on" clearable @keyup.enter.native="handleLogin" />
       </el-form-item>
 
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input :type="passwordType" v-model="loginForm.password" :placeholder="$t('login.password')" name="password" auto-complete="on" @keyup.enter.native="handleLogin" />
+        <el-input :type="passwordType" v-model="loginForm.password" clearable :placeholder="$t('login.password')" name="password" auto-complete="on" @keyup.enter.native="handleLogin" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
         </span>
       </el-form-item>
-      <el-row>
-        <el-col :span="12">
-         <el-checkbox v-model="savePwd" >记住密码</el-checkbox>
+      <el-row style="margin-top:3.2rem;">
+        <el-col :span="10" style="margin-top: 0.7rem;">
+          <el-checkbox v-model="savePwd">记住密码</el-checkbox>
         </el-col>
-        <el-col :span="12">
-          <a  type="text"  @click.native.prevent="handleLogin">忘记密码？</a>
+        <el-col :span="7">
+          <el-button :loading="loading" type="primary" style="width:7rem;" @click.native.prevent="handleLogin">{{ $t('login.logIn') }}</el-button>
         </el-col>
-      </el-row>
-      <el-row style="margin-top:1rem;">
-        <el-col :span="12">
-          <el-button type="primary" style="width:8rem;" @click.native.prevent="handleReset">{{ $t('login.reset') }}</el-button>
-        </el-col>
-        <el-col :span="12">
-          <el-button :loading="loading" type="primary" style="width:8rem;" @click.native.prevent="handleLogin">{{ $t('login.logIn') }}</el-button>
+        <el-col :span="7">
+          <el-button type="primary" style="width:7rem;" @click.native.prevent="handleReset">{{ $t('login.reset') }}</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -93,11 +88,11 @@ export default {
       passwordType: "password",
       loading: false,
       showDialog: false,
-      bgimg: 'url(' + require('@/assets/images/login/lg_bg.png') + ')',
-      lgFromImg: 'url(' + require('@/assets/images/login/form.png') + ')',
-      szdjImg: 'url(' + require('@/assets/images/login/szdj.png') + ')',
-      ptImg: 'url(' + require('@/assets/images/login/pt.png') + ')',
-      savePwd:false
+      bgimg: "url(" + require("@/assets/images/login/lg_bg.png") + ")",
+      lgFromImg: "url(" + require("@/assets/images/login/form.png") + ")",
+      szdjImg: "url(" + require("@/assets/images/login/szdj.png") + ")",
+      ptImg: "url(" + require("@/assets/images/login/pt.png") + ")",
+      savePwd: false
     };
   },
   created() {
@@ -124,12 +119,23 @@ export default {
             .dispatch("LoginByUsername", this.loginForm)
             .then(() => {
               this.loading = false;
-              this.$router.push({ path: "/" });
-              if(this.savePwd){
-                    window.sessionStorage.username =  this.loginForm.username;
-                    window.sessionStorage.password = this.loginForm.password;
-                    localStorage.rmbPassword = true;
-              }
+              this.$store
+                .dispatch("GetUserMenu")
+                .then(res => {
+                  const menus = res.data; //
+                  this.$store.dispatch("GenPrivRoutes", menus).then(() => {
+                    this.$router.push({ path: "/" });
+                  });
+                })
+                .catch(err => {
+                  this.$store.dispatch("FedLogOut").then(() => {
+                  });
+                });
+              // if(this.savePwd){
+              //       window.sessionStorage.username =  this.loginForm.username;
+              //       window.sessionStorage.password = this.loginForm.password;
+              //       localStorage.rmbPassword = true;
+              // }
             })
             .catch(data => {
               this.$notify.error({
@@ -137,7 +143,6 @@ export default {
                 message: data.msg || data,
                 duration: 2000
               });
-              this.$router.push({ path: "/" });
               this.loading = false;
             });
         } else {
@@ -197,7 +202,6 @@ $cursor: rgb(15, 14, 14);
 
 /* reset element-ui css */
 .login-container {
-  
   .el-input {
     display: inline-block;
     height: 47px;
@@ -222,7 +226,7 @@ $cursor: rgb(15, 14, 14);
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     color: #454545;
-    margin-top: 1.5rem;
+    margin-top: 1.9rem;
   }
 }
 </style>
@@ -244,7 +248,7 @@ $light_gray: #eee;
     width: 520px;
     padding: 35px 35px 15px 35px;
     margin: 120px auto;
-    background-color:#58605f;
+    // background-color:#58605f;
     border-radius: 0.7rem;
     margin-top: 11rem;
     height: 408px;

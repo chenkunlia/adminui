@@ -57,6 +57,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       filename: 'index.html',
       template: 'index.html',
       inject: true,
+      title:'东江水力',
       chunks:['app']
     }),
     // new HtmlWebpackPlugin({

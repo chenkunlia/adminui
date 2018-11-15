@@ -10,22 +10,40 @@ import Layout from '@/views/admin/layout'
 //   {path: '/admin/login', name: 'home', component: r => cp(r, '/admin/login')}
 // ]
 const systemRouter = [
-  {path: '/system/systemMenu', component: () => import('@/views/admin/system/SystemMenu'), name: 'systemMenu', meta: { title: 'systemMenu', icon: 'nested', noCache: true} },
-  {path: '/system/systemRole', component: () => import('@/views/admin/system/SystemRole'), name: 'systemRole', meta: { title: 'systemRole', icon: 'peoples', noCache: true} },
-  {path: '/system/user', component: () => import('@/views/admin/system/user'), name: 'User', meta: {title: 'user', icon: 'user' } },
-  {path: '/system/organ',component: () => import('@/views/admin/system/organ'),name: 'Organ', meta: { title: 'organ', icon: 'organ'} },
-  {path: '/system/log',component: () => import('@/views/admin/system/log'),name: 'Log', meta: { title: 'log', icon: 'organ'} }
+  {path: '/system/systemMenu', component: () => import('@/views/admin/system/SystemMenu'), name: 'systemMenu', meta: { title: '菜单管理', icon: 'nested', noCache: true} },
+  {path: '/system/systemRole', component: () => import('@/views/admin/system/SystemRole'), name: 'systemRole', meta: { title: '角色管理', icon: 'peoples', noCache: true} },
+  {path: '/system/user', component: () => import('@/views/admin/system/user'), name: 'User', meta: {title: '用户管理', icon: 'user' } },
+  {path: '/system/organ',component: () => import('@/views/admin/system/organ'),name: 'Organ', meta: { title: '部门管理', icon: 'organ'} },
+  {path: '/system/log',component: () => import('@/views/admin/system/log'),name: 'Log', meta: { title: '日志管理', icon: 'organ'} }
+]
+
+const emergencyRouter = [
+  {path: '/emergency/emergencyPlan', component: () => import('@/views/admin/emergency/emergencyPlan'), name: 'emergencyPlan', meta: { title: '预案管理', icon: 'nested', noCache: true} },
+  {path: '/emergency/emergencyEvent', component: () => import('@/views/admin/emergency/emergencyEvent'), name: 'emergencyEvent', meta: { title: '事件管理', icon: 'nested', noCache: true} }
 ]
 
 
 const dutyRouter = [
-  {path: '/duty/dutylist',component: () => import('@/views/admin/duty/DutyList'),name: 'dutylist', meta: { title: 'dutylist', icon: 'list'} },
-
+  {path: '/duty/dutylist',component: () => import('@/views/admin/duty/DutyList'),name: 'dutylist', meta: { title: '值班列表', icon: 'list'} },
+  {path: '/duty/dutyPerson',component: () => import('@/views/admin/duty/DutyPerson'),name: 'dutyPerson', meta: { title: '人员登记', icon: 'list'} },
+  {path: '/duty/dutyArrange',component: () => import('@/views/admin/duty/DutyArrange'),name: 'dutyArrange', meta: { title: '值班安排', icon: 'nested'} },
+  
+]
+const waterRouter = [
+  {path: '/water/deliverymanage',component: () => import('@/views/admin/water/DeliveryManage'),name: 'deliveryManage', meta: { title: '水雨情录入', icon: 'list'} },
+  
 ]
 
+const eneralizeRouter = [
+  {path: '/eneralize/intake',component: () => import('@/views/admin/eneralize/intake'),name: 'intake', meta: { title: '取水概化图', icon: 'list'}},
+  {path: '/eneralize/intake/intakeData',component: () => import('@/views/admin/eneralize/intake/intakeData'),name: 'intakeData', meta: { title: '数据管理', icon: 'list'}}
+]
 
-
-
+const schedulingRouter = [
+  {path: '/scheduling/SchedulingPlan',component: () => import('@/views/admin/scheduling/SchedulingPlan'),name: 'SchedulingPlan', meta: { title: '调度计划生成', icon: 'list'}},
+  {path: '/scheduling/LowWaterTemplate/:id/:year',component: () => import('@/views/admin/scheduling/LowWaterTemplate'),name: 'LowWaterTemplate', meta: { title: '枯水期调度方案', icon: 'list'}},
+  {path: '/scheduling/LowWaterTemplate/History/:id/:year',component: () => import('@/views/admin/scheduling/LowWaterTemplate/History'),name: 'History', meta: { title: '枯水期调度方案', icon: 'list'}}
+]
 
 Vue.use(Router)
 export const constantRouterMap = [
@@ -55,13 +73,13 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/dashboard',
     name: 'index',
-    meta: { title: 'dashboard', icon: 'dashboard' },
+    meta: { title: '首页', icon: 'dashboard' },
     children: [
       {
         path: 'dashboard',
         component: () => import('@/views/admin/Demo'),
         name: 'Dashboard1',
-        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+        meta: { title: '首页', icon: 'dashboard', noCache: true }
       }
     ]
   },
@@ -70,26 +88,48 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/system/user',
     name: 'systemIndex',
-    meta: { title: 'system', icon: 'dashboard' },
+    meta: { title: '系统管理', icon: 'dashboard' },
     children: systemRouter
+  },
+  {
+    path: '/emergency',
+    component: Layout,
+    redirect: '/emergency/emergencyPlan',
+    name: 'emergencyIndex',
+    meta: { title: '应急事件管理', icon: 'component' },
+    children: emergencyRouter
+  },
+  {
+    path: '/scheduling',
+    component: Layout,
+    redirect: '/scheduling/SchedulingPlan',
+    name: 'schedulingIndex',
+    meta: { title: '水量调度管理', icon: 'component' },
+    children: schedulingRouter
   },
   {
     path: '/duty',
     component: Layout,
     redirect: '/duty/dutylist',
     name: 'dutyIndex',
-    meta: { title: 'duty', icon: 'chart' },
+    meta: { title: '值班管理', icon: 'chart' },
     children: dutyRouter
   },
   {
-    path: 'home',
+    path: '/water',
     component: Layout,
-    redirect: '/home',
-    name: 'homeIndex',
-    meta: { title: 'home', icon: 'component' },
-    children: [
-      {path: '/home', component: () => import('@/views/admin/Home'), name: 'home', meta: { title: 'home', icon: 'component', noCache: true} }
-    ]
+    redirect: '/water/deliverymanage',
+    name: 'waterIndex',
+    meta: { title: '水雨情报送', icon: 'chart' },
+    children: waterRouter
+  },
+  {
+    path: '/eneralize',
+    component: Layout,
+    redirect: '/eneralize/intake',
+    name: 'eneralizeIndex',
+    meta: { title: '流域概化图', icon: 'component' },
+    children: eneralizeRouter
   }
 ]
 

@@ -1,38 +1,52 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
 import store from '@/commons/store'
-import { getToken } from '@/commons/utils/auth'
-import proxy from '../../../config/build.proxy'
+import router from '@/router/admin.router'
+import {
+  Message
+} from 'element-ui'
 // create an axios instance
 axios.defaults.withCredentials = true
 const service = axios.create({
   // baseURL: process.env.BASE_API, // api的base_url
-  timeout: 5000 // request timeout
+  timeout: 5000, // request timeout
+  withCredentials: true
 })
 export const fetch = (url, data) => {
-  const params = {...data.params, t: new Date().getTime()}
+  const params = { ...data.params,
+    t: new Date().getTime()
+  }
   data.params && data.params.push(params)
   return axios(url, data)
 }
 export const configProxy = (config) => {
   if (process.env.NODE_ENV === 'production') {
     // config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    for (var p in proxy.buildlist) {
-      let reg = proxy.buildlist[p].pathRewrite
-      let url = config.url
-      for (var r in reg) {
-        let t = url.match(r)
-        if (t) {
-          config.url = url.replace(t[0], reg[r])
-        }
-      }
-    }
+    // config.headers['Content-Type'] = 'application/json;charset=utf-8'
+    // if (Cookies.get('SHAREJSESSIONID')) {
+    //   config.headers['Cookie'] = 'SHAREJSESSIONID=' + Cookies.get('SHAREJSESSIONID')
+    // }
+    // for (var p in proxy.buildlist) {
+    //   let reg = proxy.buildlist[p].pathRewrite
+    //   let url = config.url
+    //   for (var r in reg) {
+    //     let t = url.match(r)
+    //     if (t) {
+    //       config.url = url.replace(t[0], reg[r])
+    //       console.log(config.url)
+    //     }
+    //   }
+    // }
   }
+  // console.log('withCredentials:', config.withCredentials)
   if (config.method === 'post' || config.method === 'put' || config.method === 'delete') {
     config.data = {
       ...config.data,
       _t: Date.parse(new Date()) / 1000
     }
+    // config.data = qs.stringify(config.data)
+    // config.headers = {
+    //   'Content-Type': 'application/x-www-form-urlencoded'
+    // }
   } else if (config.method === 'get') {
     config.params = {
       _t: Date.parse(new Date()) / 1000,
@@ -49,7 +63,8 @@ service.interceptors.request.use(
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
       // config.headers['X-Token'] = getToken()
     }
-    console.log('env', process.env.NODE_ENV)
+
+    // console.log('env', process.env.NODE_ENV)
     configProxy(config)
     return config
   },
@@ -62,7 +77,18 @@ service.interceptors.request.use(
 
 // respone interceptor
 service.interceptors.response.use(
-  response => response.data,
+  response => {
+    // console.log('cookies', Cookies.get('SHAREJSESSIONID'))
+    if (response.data.code == -1) {
+      store.dispatch('FedLogOut').then(() => {
+        // Message.error(response.data.msg || 'Verification failed, please login again')
+        setTimeout(() => {
+          router.push({ path: '/' })
+        }, 2000)
+      })
+    }
+    return response.data
+  },
   /**
    * 下面的注释为通过在response里，自定义code来标示请求状态
    * 当code返回如下情况则说明权限有问题，登出并返回到登录页
@@ -121,4 +147,57 @@ export const post = (url, data) => {
   })
 }
 
+export const http = (url, data, method) => {
+  if (method === 'get') {
+    return service({
+      url,
+      method,
+      params: data
+    })
+  } else {
+    return service({
+      url,
+      method,
+      data
+    })
+  }
+}
+
+export const http2 = (url, data, method) => {
+  return service({
+    url,
+    method,
+    data: data,
+    responseType: 'blob'
+  })
+}
+export const download = (_this, url, fileName) => {
+  // const loading = _this.$loading({
+  //   lock: true,
+  //   text: '正在导出...',
+  //   spinner: 'el-icon-loading',
+  //   background: 'rgba(0, 0, 0, 0.7)'
+  // })
+  service({
+    url,
+    method: 'get'
+  }).then(res => {
+    console.log(res)
+    // if ('msSaveOrOpenBlob' in navigator) {
+    //   window.navigator.msSaveOrOpenBlob(
+    //     new Blob([res]),
+    //     fileName
+    //   )
+    // } else {
+    //   let url = window.URL.createObjectURL(new Blob([res]))
+    //   let link = document.createElement('a')
+    //   link.style.display = 'none'
+    //   link.href = url
+    //   link.setAttribute('download', fileName)
+    //   document.body.appendChild(link)
+    //   link.click()
+    // }
+    // loading.close()
+  })
+}
 export default service

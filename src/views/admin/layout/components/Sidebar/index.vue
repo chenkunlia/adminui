@@ -27,9 +27,19 @@ export default {
       'sidebar'
     ]),
     isCollapse() {
-      console.log("privRouters",this.privRouters)
+      // console.log("privRouters",this.privRouters)
       return !this.sidebar.opened
     }
   }
 }
 </script>
+
+<style>
+.el-scrollbar__wrap{
+  height: 95% !important;
+  text-align: left;
+}
+
+
+</style>
+

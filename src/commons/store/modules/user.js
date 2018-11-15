@@ -1,6 +1,6 @@
 import { loginByUsername, logout, getUserInfo, getUserMenu } from '@/commons/api/user'
 import { getToken, setToken, removeToken, getName, setName, removeName } from '@/commons/utils/auth'
-
+import emergency from "@/commons/api/emergency";
 const user = {
   state: {
     user: '',
@@ -14,7 +14,9 @@ const user = {
     menus: [],
     setting: {
       articlePlatform: []
-    }
+    },
+    showBubble: false,
+    bubbleNum: 0
   },
 
   mutations: {
@@ -47,6 +49,12 @@ const user = {
     },
     SET_PRIVROUTERS: (state, routers) => {
       state.menus = routers
+    },
+    SET_SHOWBUBBLE: (state, flag) => {
+      state.showBubble = flag
+    },
+    SET_BubbleNum: (state, num) => {
+      state.bubbleNum = num
     }
     // SET_ACCOUNT: (state, account) => {
     //   state.account = account
@@ -104,12 +112,18 @@ const user = {
       return new Promise((resolve, reject) => {
         getUserMenu(state.token).then(response => {
           if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
-            reject('error')
+            reject(response.msg || 'error')
           }
           const data = response.data
+
           // console.log('menus', data)
           if (data && data.length > 0) { // 验证返回的roles是否是一个非空数组
+            let menu = _.find(data, {menuUrl: '/emergency/emergencyEvent'})
+            if (menu) {
+              commit('SET_SHOWBUBBLE', true)
+            }
             commit('SET_MENUS', data)
+            let paths = data.map(menu => menu.menuUrl)
           } else {
             reject('getMenu: menus must be a non-null array !')
           }
@@ -145,6 +159,17 @@ const user = {
           commit('SET_PRIVROUTERS', [])
           removeToken()
           removeName()
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    // 登出
+    GetBubble ({ commit, state }) {
+      return new Promise((resolve, reject) => {
+        emergency.bubbleEmergencyEvent().then(res => {
+          commit('SET_BubbleNum', res.data)
           resolve()
         }).catch(error => {
           reject(error)
